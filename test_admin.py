@@ -13,6 +13,8 @@ with app.test_client() as client:
     assert response.status_code == 201, response.get_data(as_text=True)
     code = response.json['tracking_code']
     assert client.get('/api/orders/'+code).status_code == 200
+    lookup = client.post('/api/orders/lookup', json={'tracking_code': code})
+    assert lookup.status_code == 200
     assert client.get('/admin').status_code == 302
     login = client.post('/admin/login', data={'username':'pitbull','password':'1533'})
     assert login.status_code == 302
@@ -20,4 +22,5 @@ with app.test_client() as client:
     assert client.post('/api/admin/orders/1/status', json={'status':'released'}).status_code == 200
     order = client.get('/api/orders/'+code).json
     assert order['status'] == 'released'
+    assert client.post('/api/orders/lookup', json={'tracking_code': code}).json['status'] == 'released'
 print('public=OK login=OK order=OK status-update=OK')

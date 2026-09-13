@@ -95,6 +95,19 @@ def public_order(tracking):
     return jsonify(order_dict(row))
 
 
+@app.post("/api/orders/lookup")
+def lookup_order():
+    data = request.get_json(silent=True) or {}
+    tracking = str(data.get("tracking_code", "")).strip().upper()
+    if not tracking:
+        return jsonify(error="Informe o código de rastreio."), 400
+    with db() as conn:
+        row = conn.execute("SELECT * FROM orders WHERE tracking_code=?", (tracking,)).fetchone()
+    if not row:
+        return jsonify(error="Pedido não encontrado para este código."), 404
+    return jsonify(order_dict(row))
+
+
 @app.get("/admin/login")
 def admin_login():
     return render_template("admin_login.html")
