@@ -77,6 +77,9 @@ def create_order():
     timestamp = now()
     try:
         with db() as conn:
+            existing = conn.execute("SELECT * FROM orders WHERE tracking_code=?", (tracking,)).fetchone()
+            if existing:
+                return jsonify(order_dict(existing)), 200
             conn.execute("""INSERT INTO orders
                 (tracking_code,street,number,complement,neighborhood,city,state,cep,status,created_at,updated_at)
                 VALUES (?,?,?,?,?,?,?,?,?,?,?)""", (tracking, data["street"].strip(), data["number"].strip(), str(data.get("complement", "")).strip(), data.get("neighborhood", "").strip(), data["city"].strip(), data["state"].strip(), data["cep"].strip(), "received", timestamp, timestamp))
