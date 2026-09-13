@@ -24,11 +24,16 @@ def init_db():
         conn.execute("""CREATE TABLE IF NOT EXISTS orders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             tracking_code TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL DEFAULT '',
             street TEXT NOT NULL, number TEXT NOT NULL, complement TEXT,
             neighborhood TEXT, city TEXT, state TEXT, cep TEXT NOT NULL,
             status TEXT NOT NULL DEFAULT 'received', created_at TEXT NOT NULL,
             released_at TEXT, updated_at TEXT NOT NULL
         )""")
+        try:
+            conn.execute("ALTER TABLE orders ADD COLUMN name TEXT NOT NULL DEFAULT ''")
+        except sqlite3.OperationalError:
+            pass
         conn.commit()
 
 
@@ -69,24 +74,36 @@ def index():
 
 @app.post("/api/orders")
 def create_order():
+    return _create_order_from_request()
+
+
+def _create_order_from_request():
     data = request.get_json(silent=True) or {}
-    required = ["street", "number", "cep", "city", "state"]
+    required = ["name", "street", "number", "cep", "city", "state", "tracking_code"]
     if any(not str(data.get(field, "")).strip() for field in required):
         return jsonify(error="Informe o endereço completo."), 400
-    tracking = str(data.get("tracking_code", "")).strip().upper() or f"RF-{secrets.token_hex(4).upper()}"
+    tracking = str(data.get("tracking_code", "")).strip().upper()
+    if not tracking:
+        return jsonify(error="O código de rastreio é obrigatório."), 400
     timestamp = now()
     try:
         with db() as conn:
             existing = conn.execute("SELECT * FROM orders WHERE tracking_code=?", (tracking,)).fetchone()
             if existing:
-                return jsonify(order_dict(existing)), 200
+                return jsonify(error="Este código já está cadastrado."), 409
             conn.execute("""INSERT INTO orders
-                (tracking_code,street,number,complement,neighborhood,city,state,cep,status,created_at,updated_at)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?)""", (tracking, data["street"].strip(), data["number"].strip(), str(data.get("complement", "")).strip(), data.get("neighborhood", "").strip(), data["city"].strip(), data["state"].strip(), data["cep"].strip(), "received", timestamp, timestamp))
+                (tracking_code,name,street,number,complement,neighborhood,city,state,cep,status,created_at,updated_at)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""", (tracking, data["name"].strip(), data["street"].strip(), data["number"].strip(), str(data.get("complement", "")).strip(), data.get("neighborhood", "").strip(), data["city"].strip(), data["state"].strip(), data["cep"].strip(), "received", timestamp, timestamp))
             conn.commit()
     except sqlite3.IntegrityError:
         return jsonify(error="Esse código já foi utilizado. Informe outro."), 409
     return jsonify(tracking_code=tracking, status="received"), 201
+
+
+@app.post("/api/admin/orders")
+@admin_required
+def admin_create_order():
+    return _create_order_from_request()
 
 
 @app.get("/api/orders/<tracking>")

@@ -9,19 +9,17 @@ from app import app
 
 with app.test_client() as client:
     assert client.get('/').status_code == 200
-    response = client.post('/api/orders', json={'street':'Rua Teste','number':'10','complement':'','neighborhood':'Centro','city':'Valinhos','state':'SP','cep':'13279-813','tracking_code':'CLIENTE-001'})
-    assert response.status_code == 201, response.get_data(as_text=True)
+    response = client.post('/api/orders', json={'name':'Cliente Teste','street':'Rua Teste','number':'10','city':'Valinhos','state':'SP','cep':'13279-813','tracking_code':'CLIENTE-001'})
+    assert response.status_code == 201
+    login = client.post('/admin/login', data={'username':'pitbull','password':'1533'})
+    assert login.status_code == 302
     code = response.json['tracking_code']
     assert code == 'CLIENTE-001'
-    repeat = client.post('/api/orders', json={'street':'Outra Rua','number':'99','complement':'','neighborhood':'Centro','city':'Valinhos','state':'SP','cep':'13279-813','tracking_code':code})
-    assert repeat.status_code == 200
-    assert repeat.json['street'] == 'Rua Teste'
+    repeat = client.post('/api/orders', json={'name':'Outro','street':'Outra Rua','number':'99','city':'Valinhos','state':'SP','cep':'13279-813','tracking_code':code})
+    assert repeat.status_code == 409
     assert client.get('/api/orders/'+code).status_code == 200
     lookup = client.post('/api/orders/lookup', json={'tracking_code': code})
     assert lookup.status_code == 200
-    assert client.get('/admin').status_code == 302
-    login = client.post('/admin/login', data={'username':'pitbull','password':'1533'})
-    assert login.status_code == 302
     assert client.get('/admin').status_code == 200
     assert client.post('/api/admin/orders/1/status', json={'status':'released'}).status_code == 200
     order = client.get('/api/orders/'+code).json
