@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Demonstração educativa de interface de rastreamento de entrega.">
+  <title>Rastreia Fácil — Demonstração educativa</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="demo-banner">DEMONSTRAÇÃO EDUCATIVA — NÃO É UM RASTREAMENTO OFICIAL</div>
+  <main class="shell">
+    <section class="card intro">
+      <div class="brand-mark">RF</div>
+      <p class="kicker">Rastreia Fácil</p>
+      <h1>Consulte uma entrega de demonstração</h1>
+      <p class="muted">Este protótipo mostra, apenas para fins educativos, como um fluxo de consulta de entrega pode funcionar.</p>
+      <div class="notice"><strong>Importante:</strong> nenhum CPF ou endereço é enviado ou armazenado neste protótipo. Use dados fictícios.</div>
+    </section>
+    <section class="card" aria-labelledby="form-title">
+      <h2 id="form-title">Dados da consulta</h2>
+      <form id="tracking-form" novalidate>
+        <label for="cpf">CPF de teste</label>
+        <input id="cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" autocomplete="off" required>
+        <p class="hint">Use somente um CPF fictício, por exemplo 111.111.111-11.</p>
+        <label for="cep">CEP de destino</label>
+        <input id="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code" required>
+        <div class="address-grid"><div><label for="street">Rua</label><input id="street" readonly></div><div><label for="neighborhood">Bairro</label><input id="neighborhood" readonly></div><div><label for="city">Cidade</label><input id="city" readonly></div><div><label for="state">UF</label><input id="state" readonly></div></div>
+        <label for="number">Número</label><input id="number" inputmode="numeric" placeholder="Número da casa" required>
+        <label for="complement">Complemento <span>(opcional)</span></label><input id="complement" placeholder="Apartamento, bloco etc.">
+        <button type="submit">Ver demonstração</button>
+      </form>
+      <p id="form-status" class="status" role="status"></p>
+    </section>
+    <section id="result" class="card result" hidden aria-live="polite">
+      <div class="result-head"><div><p class="kicker">Simulação local</p><h2>Status da entrega</h2></div><span class="fake-id">DEMO-0001</span></div>
+      <p id="destination" class="destination"></p>
+      <div class="progress-wrap"><div class="progress-label"><strong id="stage">Veículo liberado</strong><strong id="percent">0%</strong></div><div class="progress"><div id="progress-bar"></div></div><p id="eta" class="eta"></p></div>
+      <ol class="timeline"><li class="active"><span>1</span><div><strong>Veículo liberado</strong><small>Simulação iniciada no navegador</small></div></li><li id="stage-route"><span>2</span><div><strong>Veículo em rota</strong><small>Etapa demonstrativa</small></div></li><li id="stage-delivered"><span>3</span><div><strong>Entregue</strong><small>Conclusão da simulação</small></div></li></ol>
+      <p class="notice small"><strong>Simulação:</strong> o progresso é calculado localmente para demonstrar uma interface. Não representa prazo, veículo, pedido ou entrega reais.</p>
+    </section>
+    <footer><a href="/privacidade">Privacidade</a> · <a href="/termos">Termos</a><span> · Rastreia Fácil — protótipo educativo</span></footer>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
