@@ -9,4 +9,5 @@ with app.test_client() as client:
         assert marker in html, marker
     assert 'id="cpf"' not in html
     assert 'id="tracking-code"' in html
+    assert 'use um código de teste' not in html
 print("routes=OK no-cpf=OK address-fields=OK")

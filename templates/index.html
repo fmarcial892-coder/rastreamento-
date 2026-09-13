@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="Ambiente interno de treinamento para fluxo de consulta de entrega.">
+  <meta name="description" content="Ambiente interno para consulta de fluxo de entrega.">
   <title>Rastreamento de Entrega — Ambiente interno</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="training-strip">AMBIENTE INTERNO DE TREINAMENTO — STATUS E PRAZOS SIMULADOS</div>
+  <div class="training-strip">AMBIENTE INTERNO — FLUXO DE CONSULTA</div>
   <header class="topbar"><div class="topbar-inner"><div class="wordmark"><span>Rastreia</span><b>Fácil</b></div><span class="topbar-note">Fluxo de consulta</span></div></header>
   <main class="page">
     <section class="hero"><div class="hero-icon">⌁</div><h1>Rastreamento de Entrega</h1><p>Consulte o andamento de uma entrega informando o endereço e o código de rastreio.</p></section>
@@ -19,7 +19,7 @@
         <div class="field-row"><div class="field wide"><label for="cep">CEP</label><input id="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code" required><small>Digite o CEP para preencher o endereço.</small></div><div class="field"><label for="number">Número</label><input id="number" inputmode="numeric" placeholder="Ex.: 228" required></div></div>
         <div class="field-row"><div class="field wide"><label for="street">Rua</label><input id="street" readonly placeholder="Preenchida automaticamente"></div><div class="field"><label for="complement">Complemento <em>(opcional)</em></label><input id="complement" placeholder="Apto, bloco"></div></div>
         <div class="field-row"><div class="field"><label for="neighborhood">Bairro</label><input id="neighborhood" readonly></div><div class="field"><label for="city">Cidade</label><input id="city" readonly></div><div class="field small-field"><label for="state">UF</label><input id="state" readonly></div></div>
-        <label for="tracking-code">Código de Rastreio</label><input id="tracking-code" class="tracking-code" placeholder="Ex.: DEMO-0001" autocomplete="off" required><small class="code-note">Para treinamento, use qualquer código de teste.</small>
+        <label for="tracking-code">Código de Rastreio <em>(opcional)</em></label><input id="tracking-code" class="tracking-code" placeholder="Se disponível, informe o código" autocomplete="off"><small class="code-note">Se deixar em branco, uma referência interna será criada automaticamente.</small>
         <button type="submit">Rastrear Entrega <span>›</span></button>
       </form>
       <p id="form-status" class="status" role="status"></p>
@@ -29,7 +29,7 @@
       <p id="destination" class="destination"></p>
       <div class="progress-label"><span id="stage">Veículo liberado</span><b id="percent">0%</b></div><div class="progress"><div id="progress-bar"></div></div><p id="eta" class="eta"></p>
       <div class="steps"><div class="step active"><i>✓</i><div><b>Veículo liberado</b><small>Etapa inicial do treinamento</small></div></div><div class="step" id="stage-route"><i>2</i><div><b>Veículo em rota</b><small>Progresso calculado localmente</small></div></div><div class="step" id="stage-delivered"><i>3</i><div><b>Entregue</b><small>Conclusão da simulação</small></div></div></div>
-      <div class="internal-note"><b>Ambiente interno:</b> esta tela não consulta pedidos reais. A barra, os status e o tempo são gerados no navegador exclusivamente para treinamento.</div>
+      <div class="internal-note"><b>Ambiente interno:</b> esta tela é destinada ao uso interno e não substitui uma consulta oficial de pedido ou entrega.</div>
     </section>
     <p class="coverage"><span>▣</span> Fluxo demonstrativo para endereços em todo o Brasil</p>
   </main>
